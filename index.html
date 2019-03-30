@@ -3,8 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>GifTasticness</title>
 </head>
 
@@ -19,48 +17,72 @@
         </form>
 
         <button id="sports-button">Search</button>
-        <div id="gifs-view"></div>
+        <div id="gifs-view">
+        </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script type="text/javascript">
 
             // click function
             $("#sports-button").on("click", function () {
+
+                // storing giphy api url for random sports image
                 var sports = ["Football", "Swimming", "Hockey", "Golf"];
 
-                
+                // 
+                // var sport = $(this).attr("data-name");
+                // var queryURL = ""
+                var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + 
+                sports + "&api_key=xraabs6ZttBG3Zzj8Vcbpv7mZW5uMFnh";
+                // url.done(function (data) { console.log("success got data", data); });
 
-                    var sport = $(this).attr("data-name");
-                    // var queryURL = ""
-                    var xhr = $.get("https://api.giphy.com/v1/gifs/search?q=" + sports + "ryan+gosling&api_key=xraabs6ZttBG3Zzj8Vcbpv7mZW5uMFnh&limit=5");
-                    xhr.done(function (data) { console.log("success got data", data); });
+                // AJAX GET request to queryURL
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                })
 
-                    // AJAX GET request to queryURL
-                    $.ajax({
-                        url: xhr,
-                        method: "GET"
-                    })
+                    // when there is a response...
+                    .then(function (response) {
 
-                        // when there is a response...
-                        .then(function (response) {
+                        var results = response.data;
 
-                            // saving image 
-                            var imageUrl = response.data.image_original_url;
+                        for (var i = 0; i < results.length; i++) {
+                        if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+                            var gifDiv = $("<div>");
 
-                            // holds sports gifs
-                            var sportsImage = $("<img>");
+                            var rating = results[i].rating;
 
-                            // attribution
-                            sportsImage.attr("src", imageUrl);
-                            sportsImage.attr("alt", "sports image");
+                            var p = $("<p>").text("rating: " + rating);
 
-                            // prepending
-                            $("#gifs-view").prepend(sportsImage);
+                                var sportsImage = $("<img>");
+
+                                sportsImage.attr("src", results[i].images.fixed_height.url);
+
+                                gifDiv.append(p);
+                                gifDiv.append(sportsImage);
+
+                                $("#gifs-view").prepend(gifDiv);
+                        }
+
+                        // // saving image 
+                        // var imageUrl = response.data.image_original_url;
+
+                        // // holds sports gifs
+                        // var sportsImage = $("<img>");
+
+                        // // attribution
+                        // sportsImage.attr("src", imageUrl);
+                        // sportsImage.attr("alt", "sports image");
+
+                        // // prepending
+                        // $("#gifs-view").prepend(sportsImage);
 
 
-                        })
+                    }
+                })
 
-                
+
             });
 
 
