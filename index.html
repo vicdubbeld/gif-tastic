@@ -18,33 +18,54 @@
             <input type="text" id="gif-input">
         </form>
 
+        <button id="sports-button">Search</button>
         <div id="gifs-view"></div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script type="text/javascript">
 
-            var sports = ["Football", "Swimming", "Hockey", "Golf"];
+            // click function
+            $("#sports-button").on("click", function () {
+                var sports = ["Football", "Swimming", "Hockey", "Golf"];
 
-            function displayGifs() {
+                
 
-                var sport = $(this).attr("data-name");
-                // var queryURL = ""
-                var xhr = $.get("http://api.giphy.com/v1/gifs/search?q=" + sports + "ryan+gosling&api_key=xraabs6ZttBG3Zzj8Vcbpv7mZW5uMFnh&limit=5");
-                xhr.done(function (data) { console.log("success got data", data); });
-            
-                $.ajax({
-                    url: xhr,
-                    // or
-                    //  url: queryURL,
-                    method: "GET"
-                }).then(function(response) {
+                    var sport = $(this).attr("data-name");
+                    // var queryURL = ""
+                    var xhr = $.get("https://api.giphy.com/v1/gifs/search?q=" + sports + "ryan+gosling&api_key=xraabs6ZttBG3Zzj8Vcbpv7mZW5uMFnh&limit=5");
+                    xhr.done(function (data) { console.log("success got data", data); });
 
-                    // holds sports gifs
-                    var sportsDiv = $("<div class='sports'>");
+                    // AJAX GET request to queryURL
+                    $.ajax({
+                        url: xhr,
+                        method: "GET"
+                    })
 
-                    
-                })
-            }
+                        // when there is a response...
+                        .then(function (response) {
+
+                            // saving image 
+                            var imageUrl = response.data.image_original_url;
+
+                            // holds sports gifs
+                            var sportsImage = $("<img>");
+
+                            // attribution
+                            sportsImage.attr("src", imageUrl);
+                            sportsImage.attr("alt", "sports image");
+
+                            // prepending
+                            $("#gifs-view").prepend(sportsImage);
+
+
+                        })
+
+                
+            });
+
+
+
+
         </script>
     </div>
 </body>
