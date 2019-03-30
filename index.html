@@ -9,14 +9,43 @@
 </head>
 
 <body>
-    
-    <div class = "container">
+
+    <div class="container">
         <h1>Gif City</h1>
 
-        <form id = "gif-form">
-            <label for = "gif-input">Search Gifs here</label>
-            
+        <form id="gif-form">
+            <label for="gif-input">Search Gifs here</label>
+            <input type="text" id="gif-input">
         </form>
+
+        <div id="gifs-view"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+
+            var sports = ["Football", "Swimming", "Hockey", "Golf"];
+
+            function displayGifs() {
+
+                var sport = $(this).attr("data-name");
+                // var queryURL = ""
+                var xhr = $.get("http://api.giphy.com/v1/gifs/search?q=" + sports + "ryan+gosling&api_key=xraabs6ZttBG3Zzj8Vcbpv7mZW5uMFnh&limit=5");
+                xhr.done(function (data) { console.log("success got data", data); });
+            
+                $.ajax({
+                    url: xhr,
+                    // or
+                    //  url: queryURL,
+                    method: "GET"
+                }).then(function(response) {
+
+                    // holds sports gifs
+                    var sportsDiv = $("<div class='sports'>");
+
+                    
+                })
+            }
+        </script>
     </div>
 </body>
 
