@@ -11,84 +11,113 @@
     <div class="container">
         <h1>Gif City</h1>
 
+        <!-- buttons will appear here -->
+        <div id="gif-buttons"></div>
+
         <form id="gif-form">
-            <label for="gif-input">Search Gifs here</label>
+            <label for="gif-input">Add a Sport Here:</label>
             <input type="text" id="gif-input">
-        </form>
+            <br>
 
-        <button id="sports-button">Search</button>
-        <div id="gifs-view">
-        </div>
+            <!-- button triggers new gif to be added -->
+            <input id="add-gif" type="submit" value="add a sports gif">
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script type="text/javascript">
 
-            // click function
-            $("#sports-button").on("click", function () {
+            <!-- gifs will appear here -->
+            <div id="gifs-view">
+            </div>
 
-                // storing giphy api url for random sports image
-                var sports = ["Football", "Swimming", "Hockey", "Golf"];
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+            <script type="text/javascript">
+                // array of sports
+                var sports = ["football", "basketball", "rugby", "tennis", "diving", "frisbee"];
 
-                // 
-                // var sport = $(this).attr("data-name");
-                // var queryURL = ""
-                var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + 
-                sports + "&api_key=xraabs6ZttBG3Zzj8Vcbpv7mZW5uMFnh";
-                // url.done(function (data) { console.log("success got data", data); });
+                // re-renders html to display content
+                function displaySportGif() {
 
-                // AJAX GET request to queryURL
-                $.ajax({
-                    url: queryURL,
-                    method: "GET"
-                })
+                    // $("#gifs-view").empty();
 
-                    // when there is a response...
-                    .then(function (response) {
+                    var sport = $(this).attr("data-name");
+                    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+                        sport + "&api_key=xraabs6ZttBG3Zzj8Vcbpv7mZW5uMFnh&limit=10";
+                    // url.done(function (data) { console.log("success got data", data); });
 
-                        var results = response.data;
+                    // AJAX GET request to queryURL
+                    $.ajax({
+                        url: queryURL,
+                        method: "GET"
+                    })
 
-                        for (var i = 0; i < results.length; i++) {
-                        if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
-                            var gifDiv = $("<div>");
+                        // when there is a response...
+                        .then(function (response) {
 
-                            var rating = results[i].rating;
+                            console.log(queryURL);
+                            console.log(response);
 
-                            var p = $("<p>").text("rating: " + rating);
+                            var results = response.data;
+
+                            for (var i = 0; i < results.length; i++) {
+                                // creates div to hold gifs
+                                var gifDiv = $("<div class ='sports'>");
+
+                                var rating = response.data[i].rating;
+
+                                
+
+                                var p = $("<p>").text("Rating: " + rating);
+
+                                // var imgURL = results[i];
 
                                 var sportsImage = $("<img>");
 
                                 sportsImage.attr("src", results[i].images.fixed_height.url);
 
+                                // displays rating
                                 gifDiv.append(p);
+                                // displays gif
                                 gifDiv.append(sportsImage);
 
+                                // puts new gifs on top of old ones
                                 $("#gifs-view").prepend(gifDiv);
-                        }
 
-                        // // saving image 
-                        // var imageUrl = response.data.image_original_url;
+                            }
+                        });
+                }
 
-                        // // holds sports gifs
-                        // var sportsImage = $("<img>");
+                function renderButtons() {
 
-                        // // attribution
-                        // sportsImage.attr("src", imageUrl);
-                        // sportsImage.attr("alt", "sports image");
+                    $("#gif-buttons").empty();
 
-                        // // prepending
-                        // $("#gifs-view").prepend(sportsImage);
+                    for (var i = 0; i < sports.length; i++) {
 
+                        var a = $("<button>");
 
+                        a.addClass("gif-btn");
+
+                        a.attr("data-name", sports[i]);
+
+                        a.text(sports[i]);
+
+                        $("#gif-buttons").append(a);
                     }
-                })
+                }
 
+                $("#add-gif").on("click", function (event) {
+                    event.preventDefault();
 
-            });
+                    var sport = $("#gif-input").val().trim();
 
+                    sports.push(sport);
 
+                    renderButtons();
+                });
 
+                renderButtons();
 
-        </script>
+                $(document).on("click", ".gif-btn", displaySportGif);
+
+                
+            </script>
     </div>
 </body>
 
